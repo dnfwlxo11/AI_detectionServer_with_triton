@@ -13,4 +13,5 @@ link. https://github.com/triton-inference-server/server)
 `docker-compose up --build`  
   
   
-**It's a simple example, so you can see it yourself and modify it.**
+**It's a simple example, so you can see it yourself and modify it.**  
+**(Assume that you know how to use dockers, create Detection models, and set flasks)**
