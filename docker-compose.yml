@@ -1,0 +1,36 @@
+version: '3'
+services:
+  # implement samples as flask, change to later node.js
+  # app:
+  #   image: nodejs_triton
+  #   container_name: nodejs_triton
+  #   build: 
+  #     context: nodejs
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "13000:3000"
+  #   command: "npm test"
+  #   restart: always
+  app:
+    image: flask_app
+    container_name: flask_server
+    build:
+      context: flask
+      dockerfile: Dockerfile
+    ports:
+      - "13000:5000"
+  thermal_model:
+    image: myModel
+    container_name: myModel
+    runtime: nvidia
+    build:
+      context: triton
+      dockerfile: Dockerfile
+    ports:
+      - "13100-13102:8000-8002"
+    command:
+      - tritonserver
+      - --model-repository=/models
+      - --backend-config=tensorflow,version=2
+      - --strict-model-config=false
+      - --log-verbose=1

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>모델 Inference</title>
+	<script src="http://code.jquery.com/jquery-latest.min.js"></script>
+	<script>
+		function setPreview(input, opacity) {
+			if (input.files && input.files[0]) {
+				var reader = new FileReader();
+				reader.onload = function (e) {
+					$('#input').attr('src', e.target.result);
+					$('#output').attr('src', e.target.result);
+					$('#output').css('opacity', opacity);
+				};
+				reader.readAsDataURL(input.files[0]);
+			}
+		}
+	</script>
+
+	
+</head>
+
+<body>
+	<img id="input" style="max-width:100%; height:auto;" src="{{input}}">
+	<img id="output" style="max-width:100%; height:auto; opacity:'{{opacity}}'" src="{{output}}">
+
+	<form method='POST' action='/infer' enctype="multipart/form-data">
+		<input type="file" name="file" onchange="setPreview(this, 0.4);" value="파일 선택">
+		<p></p>
+		<input type='submit' value="결과 보기">
+	</form>
+
+	<div class="loading" style="text-align: center;margin-top: 20px; display: none;" ><img src='../static/img/gif_loading.gif' /></div>
+</body>
+
+</html>
