@@ -54,13 +54,34 @@ def inference(image, host, port, score):
         results = np.array(results).reshape((-1, 7))
 
         # 모델 결과를 보기 쉽게 변환하는 부분
-        label = ['car_normal', 'car_abnormal', 'factory_inside_normal', 'factory_inside_abnormal', 'factory_outside_normal', 'factory_outside_abnormal', 'fan_normal', 'fan_abnormal', 'panel_normal', 'panel_abnormal'
-                    'person_normal', 'person_abnormal', 'pipe_normal', 'pipe_abnormal', 'ship_normal', 'ship_abnormal', 'tank_normal', 'tank_abnormal', 'valve_normal', 'valve_abnormal']
+        label = {
+            1:'car_normal', 
+            2:'car_abnormal', 
+            3:'factory_inside_normal', 
+            4:'factory_inside_abnormal', 
+            5:'factory_outside_normal', 
+            6:'factory_outside_abnormal', 
+            7:'fan_normal', 
+            8:'fan_abnormal', 
+            9:'panel_normal', 
+            10:'panel_abnormal',
+            11:'person_normal', 
+            12:'person_abnormal', 
+            13:'pipe_normal', 
+            14:'pipe_abnormal', 
+            15:'ship_normal', 
+            16:'ship_abnormal', 
+            17:'tank_normal', 
+            18:'tank_abnormal', 
+            19:'valve_normal', 
+            20:'valve_abnormal'
+        }
+
         prediction = results
 
         boxes = prediction[:, 1:5]
         classes_num = prediction[:, 6]
-        classes = [label[i - 1] for i in prediction[:, 6].astype(int)]
+        classes = [label[i] for i in prediction[:, 6].astype(int)]
         scores = prediction[:, 5]
 
         # 디텍트된 박스의 좌표, 클래스, 스코어를 보여줌

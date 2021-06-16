@@ -31,7 +31,6 @@ def infer_img():
 
 	cnt = 0
 	for detect in zip(boxes, classes, scores):
-		print(detect)
 		if detect[0][2] > 0.1:
 			x1, y1, x2, y2 = round(detect[0][1]), round(detect[0][0]), round(detect[0][3]), round(detect[0][2])
 			text = "{} ({}%)".format(detect[1], round(detect[2]*100, 2))
