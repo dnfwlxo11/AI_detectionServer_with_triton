@@ -27,10 +27,12 @@ def infer_img():
 	img = cv2.imdecode(img, cv2.IMREAD_COLOR)
 	cv2.imwrite('./static/detect/' + filename_before, img)
 
-	boxes, classes, scores = infer.inference(img, 'myIP', 13100, 0.1)
+	boxes, classes, scores = infer.inference(img, '192.168.0.101', 13100, 0.1)
 
+	cnt = 0
 	for detect in zip(boxes, classes, scores):
-		if detect[2] > 0.1:
+		print(detect)
+		if detect[0][2] > 0.1:
 			x1, y1, x2, y2 = round(detect[0][1]), round(detect[0][0]), round(detect[0][3]), round(detect[0][2])
 			text = "{} ({}%)".format(detect[1], round(detect[2]*100, 2))
 			# 영문자는 한 글자당 5씩, 여백과 퍼센트 부분은 일정크기 이상으로 넘어가지 않으니 정수를 더함
@@ -39,6 +41,8 @@ def infer_img():
 			cv2.rectangle(img, (x1, y1), (x1 + text_len, y1+int((y2-y1)/20)), (0,255,255), -1)
 			cv2.rectangle(img, (x1, y1), (x2, y2), (0,255,255), 1)
 			cv2.putText(img, text, (x1 + int((x2-x1)/25), y1 + int((y2-y1)/25)), cv2.FONT_HERSHEY_SIMPLEX, 0.3, (0, 0, 0), 1, cv2.LINE_AA)
+		else:
+			break
 	
 	
 	filename_after = hash_str + '_after.jpg'

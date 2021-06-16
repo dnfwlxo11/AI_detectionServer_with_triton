@@ -25,7 +25,7 @@ def inference(image, host, port, score):
             ],
             
             "parameters":{
-                "binary_data_output": True
+                "binary_data_output": False
             }
         }
 
@@ -43,20 +43,23 @@ def inference(image, host, port, score):
         }
     
         start_time = time.time()
-        response = requests.post('http://' + host + ':' + str(port) + '/v2/models/mymodel/versions/1/infer', 
+        response = requests.post('http://' + host + ':' + str(port) + '/v2/models/thermal_detection/versions/1/infer', 
                                 data=data, headers=header)
         print("* Thermal inference time: {:.2f}".format(time.time() - start_time))
 
         # TODO: parse header
 
-        results = response.content[str(response.content).find("]}"):]
-        results = np.frombuffer(results, np.float32).reshape((-1, 7))
+        data = json.loads(response.content.decode())['outputs'][0]
+        results = data['data']
+        results = np.array(results).reshape((-1, 7))
 
         # 모델 결과를 보기 쉽게 변환하는 부분
-        label = ['face']
+        label = ['car_normal', 'car_abnormal', 'factory_inside_normal', 'factory_inside_abnormal', 'factory_outside_normal', 'factory_outside_abnormal', 'fan_normal', 'fan_abnormal', 'panel_normal', 'panel_abnormal'
+                    'person_normal', 'person_abnormal', 'pipe_normal', 'pipe_abnormal', 'ship_normal', 'ship_abnormal', 'tank_normal', 'tank_abnormal', 'valve_normal', 'valve_abnormal']
         prediction = results
 
         boxes = prediction[:, 1:5]
+        classes_num = prediction[:, 6]
         classes = [label[i - 1] for i in prediction[:, 6].astype(int)]
         scores = prediction[:, 5]
 
@@ -64,7 +67,7 @@ def inference(image, host, port, score):
         for i in range(len(scores)):
             if scores[i] > score:
                 print('*'*75)
-                print('box pos: {}\nclass: {}\nscore: {}'.format(boxes[i], classes[i], scores[i]))
+                print('box pos: {}\nclass: {}({})\nscore: {}'.format(boxes[i], classes[i], int(classes_num[i]), scores[i]))
                 print('*'*75)
             else:
                 break
@@ -73,5 +76,5 @@ def inference(image, host, port, score):
         
 
     except Exception as e:
-        print(e)
+        print(e, 'asdfqwe')
         return [0], [0], [0]

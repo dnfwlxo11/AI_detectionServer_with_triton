@@ -1,5 +1,5 @@
 FROM python:latest
-MAINTAINER Daechu
+MAINTAINER Daein
 
 COPY . /app
 
