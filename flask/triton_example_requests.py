@@ -28,8 +28,7 @@ def inference(image, host, port, score):
                 "binary_data_output": False
             }
         }
-
-        # 결과값 파싱을 편하게 하기위한 공백 제거        
+    
         body = json.dumps(body).replace(' ', '')
         body = body.encode()
         data = body + data
@@ -47,13 +46,10 @@ def inference(image, host, port, score):
                                 data=data, headers=header)
         print("* Thermal inference time: {:.2f}".format(time.time() - start_time))
 
-        # TODO: parse header
-
         data = json.loads(response.content.decode())['outputs'][0]
         results = data['data']
         results = np.array(results).reshape((-1, 7))
 
-        # 모델 결과를 보기 쉽게 변환하는 부분
         label = {
             1:'car_normal', 
             2:'car_abnormal', 
@@ -84,7 +80,6 @@ def inference(image, host, port, score):
         classes = [label[i] for i in prediction[:, 6].astype(int)]
         scores = prediction[:, 5]
 
-        # 디텍트된 박스의 좌표, 클래스, 스코어를 보여줌
         for i in range(len(scores)):
             if scores[i] > score:
                 print('*'*75)
@@ -94,8 +89,6 @@ def inference(image, host, port, score):
                 break
 
         return boxes, classes, scores
-        
 
     except Exception as e:
-        print(e, 'asdfqwe')
         return [0], [0], [0]
